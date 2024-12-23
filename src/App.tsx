@@ -23,8 +23,8 @@ export function App() {
     setIsLoading(true)
     transactionsByEmployeeUtils.invalidateData()
 
-    await employeeUtils.fetchAll()
-    await paginatedTransactionsUtils.fetchAll()
+    employeeUtils.fetchAll()
+    paginatedTransactionsUtils.fetchAll()
 
     setIsLoading(false)
   }, [employeeUtils, paginatedTransactionsUtils, transactionsByEmployeeUtils])
