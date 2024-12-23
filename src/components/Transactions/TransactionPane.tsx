@@ -3,9 +3,9 @@ import { InputCheckbox } from "../InputCheckbox"
 import { TransactionPaneComponent } from "./types"
 
 export const TransactionPane: TransactionPaneComponent = ({
-  transaction,
-  loading,
-  setTransactionApproval: consumerSetTransactionApproval,
+	transaction,
+	loading,
+	setTransactionApproval: consumerSetTransactionApproval,
 }) => {
   const [approved, setApproved] = useState(transaction.approved)
 
@@ -23,12 +23,12 @@ export const TransactionPane: TransactionPaneComponent = ({
         checked={approved}
         disabled={loading}
         onChange={async (newValue) => {
-          await consumerSetTransactionApproval({
-            transactionId: transaction.id,
-            newValue,
-          })
+        	await consumerSetTransactionApproval({
+        		transactionId: transaction.id,
+        		newValue,
+        	})
 
-          setApproved(newValue)
+        	setApproved(newValue)
         }}
       />
     </div>
