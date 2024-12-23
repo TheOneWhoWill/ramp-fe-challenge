@@ -20,8 +20,9 @@ export function InputSelect<TItem>({
 
   const onChange = useCallback<InputSelectOnChange<TItem>>(
     (selectedItem) => {
+		console.log(selectedItem);
       if (selectedItem === null) {
-        return
+        return null;
       }
 
       consumerOnChange(selectedItem)
