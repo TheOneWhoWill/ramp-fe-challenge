@@ -4,31 +4,38 @@ import { PaginatedTransactionsResult } from "./types"
 import { useCustomFetch } from "./useCustomFetch"
 
 export function usePaginatedTransactions(): PaginatedTransactionsResult {
-  const { fetchWithCache, loading } = useCustomFetch()
-  const [paginatedTransactions, setPaginatedTransactions] = useState<PaginatedResponse<
-    Transaction[]
-  > | null>(null)
+	const { fetchWithCache, loading } = useCustomFetch()
+	const [paginatedTransactions, setPaginatedTransactions] = useState<PaginatedResponse<
+		Transaction[]
+	> | null>(null)
 
-  const fetchAll = useCallback(async () => {
-    const response = await fetchWithCache<PaginatedResponse<Transaction[]>, PaginatedRequestParams>(
-      "paginatedTransactions",
-      {
-        page: paginatedTransactions === null ? 0 : paginatedTransactions.nextPage,
-      }
-    )
+	const fetchAll = useCallback(async () => {
+		const page = paginatedTransactions ? paginatedTransactions.nextPage : 0;
 
-    setPaginatedTransactions((previousResponse) => {
-      if (response === null || previousResponse === null) {
-        return response
-      }
+		if (paginatedTransactions?.nextPage === null) {
+			return;
+		}
 
-      return { data: response.data, nextPage: response.nextPage }
-    })
-  }, [fetchWithCache, paginatedTransactions])
+		const response = await fetchWithCache<PaginatedResponse<Transaction[]>, PaginatedRequestParams>(
+			"paginatedTransactions",
+			{
+				page
+			}
+		)
 
-  const invalidateData = useCallback(() => {
-    setPaginatedTransactions(null)
-  }, [])
+			setPaginatedTransactions((previousResponse) => {
 
-  return { data: paginatedTransactions, loading, fetchAll, invalidateData }
+			if (response === null || previousResponse === null) {
+				return response
+			}
+
+			return previousResponse ? { data: [...previousResponse.data, ...response.data], nextPage: response.nextPage } : response;
+		})
+	}, [fetchWithCache, paginatedTransactions])
+
+	const invalidateData = useCallback(() => {
+		setPaginatedTransactions(null)
+	}, [])
+
+	return { data: paginatedTransactions, loading, fetchAll, invalidateData }
 }
